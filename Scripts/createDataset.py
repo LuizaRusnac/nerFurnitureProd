@@ -52,21 +52,16 @@ class CreateDataset:
         for nsample, sample_data in enumerate(self.data):
             doc = nlp(sample_data)
             
-            # Iterate through entities in the processed description
             for ent in doc.ents:
                 if ent.text in target_group:
-                    # Get the start and end indices of the entity
                     start = ent.start
                     end = ent.end
 
-                    # Label the first token as 'B-PROD'
                     self.labels[nsample][start] = "B-PROD"
 
-                    # Label the rest of the tokens in the entity as 'I-PROD'
                     for i in range(start + 1, end):
                         self.labels[nsample][i] = "I-PROD"
 
-            # Append the tokens and labels to the output dataset
         return self.data, self.labels
     
     def nr_of_labeled_entities(self, entitie = 'B-PROD'):

@@ -58,11 +58,11 @@ if __name__ == '__main__':
         scraper = WebScraper(url, agents)
         meta_content = scraper.scrape(method = 'find_all', get = 'content', tag = 'meta')
 
-    #     if meta_content:
-    #         print("Meta extracted from url:", scraper.url)
-    #         write_text(meta_content_output, meta_content, 'a')
-    #     else:
-    #         print("The url not scraped: ", scraper.url)
+        if meta_content:
+            print("Meta extracted from url:", scraper.url)
+            write_text(meta_content_output, meta_content, 'a')
+        else:
+            print("The url not scraped: ", scraper.url)
 
     # """4th step: Preprocess the extracted meta data to eliminate 
     # accent chars, irrelevant chars, punctuation, extra whitespaces and extra line"""

@@ -99,7 +99,6 @@ class NerClassifier:
         return {"precision": results["overall_precision"], "recall": results["overall_recall"], "f1": results["overall_f1"], "accuracy": results["overall_accuracy"]}
         
     def train(self):
-        # self.callbacks = [self.save_metrics_callback(output_dir="./checkpoints", file_prefix="metrics_epoch")]
         self.trainer = Trainer(
             self.model,
             self.args,
@@ -108,7 +107,6 @@ class NerClassifier:
             data_collator=self.data_collator,
             tokenizer=self.tokenizer,
             compute_metrics=self.compute_metrics,
-            # callbacks=self.callbacks,
             )
         self.trainer.train()
 
@@ -121,7 +119,6 @@ class NerClassifier:
             data_collator=self.data_collator,
             tokenizer=self.tokenizer,
             compute_metrics=self.compute_metrics,
-            # callbacks=self.callbacks,
             )
         self.trainer.evaluate()
 
@@ -134,7 +131,6 @@ class NerClassifier:
             data_collator=self.data_collator,
             tokenizer=self.tokenizer,
             compute_metrics=self.compute_metrics,
-            # callbacks=self.callbacks,
             )
         self.trainer.predict(text)
 
@@ -147,7 +143,6 @@ class NerClassifier:
             data_collator=self.data_collator,
             tokenizer=self.tokenizer,
             compute_metrics=self.compute_metrics,
-            # callbacks=self.callbacks,
             )
         self.trainer.save_model(filepath)
 
@@ -157,10 +152,8 @@ class NerClassifier:
             raw_output = self.model(**tokens)
         predicted_labels = torch.argmax(raw_output.logits, dim=2)
 
-        # Convert tensor elements to Python integers for use as keys
         decoded_labels = [self.model.config.id2label[int(label_id)] for label_id in predicted_labels[0]]
 
-        # Combine the tokens and decoded labels
         return list(zip(self.tokenizer.convert_ids_to_tokens(tokens['input_ids'][0]), decoded_labels))
 
 
@@ -177,10 +170,6 @@ class NerClassifier:
                     print(f"Metrics saved to: {file_path}")
 
     def predicted_label(self, text, truncation=True, is_split_into_words=False, return_tensors='pt'):
-        # tokenized_text = self.tokenizer(text,
-        #                      truncation=truncation,
-        #                      is_split_into_words=is_split_into_words,
-        #                      return_tensors=return_tensors)
         outputs = self.model(text["input_ids"])
         return outputs.logits.argmax(-1)
     
@@ -189,8 +178,6 @@ class NerClassifier:
         list = [token for token, _ in products]
         final_list = []
         reconstructed_words = []
-        # print(predicted_labels)
-        # input('pause')
         for token in list:
             if token.startswith('##'):
                 prev_word += token[2:]

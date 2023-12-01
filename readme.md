@@ -180,11 +180,11 @@ Example:
 ```python
 from clasifier import NerCasifier
 
-clasifier = NerClassifier('./train-data/', './test-data/', label_list, train_epochs = 10)
+clasifier = NerClassifier('./path-train-data/', './path-test-data/', label_list, train_epochs = 10)
 clasifier.tokenize_data()
 clasifier.train()
 clasifier.evaluate()
-clasifier.save_model('ner-model-epoch-10.model')
+clasifier.save_model('/path-to-save/')
 ```
 
 ### 5. `utils` Module
