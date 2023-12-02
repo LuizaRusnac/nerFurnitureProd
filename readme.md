@@ -22,7 +22,7 @@ The primary objective of this project is to construct a robust NER model capable
 
 ![Data balance](https://github.com/LuizaRusnac/nerFurnitureProd/blob/master/unbalanced_classes.png)
 
-   Mean sentences length from database: 8.2242 +- 15.7733
+   Mean sentences length from database: 8.2242 `+-` 15.7733
 ![Data distribution](https://github.com/LuizaRusnac/nerFurnitureProd/blob/master/histogram_data_distibution.png)!
 
 - Using **bert-base-case** model, for test set after 10 iterations: 
