@@ -10,11 +10,29 @@ The primary objective of this project is to construct a robust NER model capable
 - The project structured in a modular fashion for user-friendly interaction.
 - Easy to scrape the data using the WebScraping class
 - Posibilities of parsing all links from a website using the derivated class GetURLS
-- Were extracted 569 product names from X functional websites
+- Were extracted 569 product names from 562 functional websites
 - Was extracted meta contain only from the websites where product names were found. It is possible that the other sites were having product names and we might confuse the classificator if the products are labeled as non-products.
 - When annotating the data based on the extracted product names, a similarity threshold of 0.9 was considered for labeling the content.
-- Easy to create dataset from text file
+- Easy to create dataset from text file using createDataset module
 - Posibilitie to split the data with respect to unbalanced number of products vs non-products
+
+## Results:
+- Found 569 product names from 562 functional websites.
+- Data: 497 product names were found from 569 scraped product names
+         3587 sentences containing text withouth product names
+         ![Data balance](https://github.com/LuizaRusnac/nerFurnitureProd/blob/master/unbalanced_classes.png)
+         
+         Mean sentences length from database: 8.2242
+         Std of sentences length from database: 15.7733
+         ![Data distribution](https://github.com/LuizaRusnac/nerFurnitureProd/blob/master/histogram_data_distibution.png)
+- Using **bert-base-case** model, for test set after 10 iterations: 
+      - precision: 0.6763
+      - recall: 0.6167
+      - f1: 0.6451
+- Using **distil-bert-uncase** model, for test set after 10 iterations:
+      - precision: 0.5469
+      - recall: 0.4876
+      - f1: 0.5156
 
 ## Future work:
 - The project extract names and content only from the provided urls. The reason is that certain websites featured products other than furniture (ex: www.factorybuys.com.au). It could impact the database by incorrectly labeling products other than furniture. For future work we could have a dictionary and scrap the data over the desired categories: chairs, sofas etc.

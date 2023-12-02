@@ -93,7 +93,6 @@ class NerClassifier:
         self.test_tokenized_datasets = self.test_dataset.map(self.tokenize_and_align_labels, batched=True)
 
     def compute_metrics(self, pred):
-        # global result_data
         predictions, labels = pred
         predictions = np.argmax(predictions, axis=2)
 
