@@ -10,7 +10,7 @@ from transformers import DataCollatorForTokenClassification
 import torch
 
 class NerClassifier:
-    def __init__(self, path_to_train_data, path_to_test_data, label_list, model = "distilbert-base-uncased",
+    def __init__(self, path_to_train_data, path_to_test_data, label_list, model = "bert-base-cased",
                   batch_size=16, padding = "longest", task = "ner",
                   evaluaton_strategy = "epoch", learning_rate = 1e-4, learning_decay = 1e-5,
                   metric = "seqeval", train_epochs=10):
@@ -26,6 +26,9 @@ class NerClassifier:
         self.trainer = None
         self.train_dataset = None
         self.test_dataset = None
+        self.eval_results = None
+        self.predicted_labels = None
+        self.labels = None
         self.metric = load_metric(metric)
         self.args = TrainingArguments(
             f"test-{task}",
@@ -90,12 +93,16 @@ class NerClassifier:
         self.test_tokenized_datasets = self.test_dataset.map(self.tokenize_and_align_labels, batched=True)
 
     def compute_metrics(self, pred):
+        # global result_data
         predictions, labels = pred
         predictions = np.argmax(predictions, axis=2)
 
         true_predictions = [[self.label_list[pred] for (pred, l) in zip(prediction, label) if l != -100] for prediction, label in zip(predictions, labels)]
         true_labels = [[self.label_list[l] for (pred, l) in zip(prediction, label) if l != -100] for prediction, label in zip(predictions, labels)]
         results = self.metric.compute(predictions=true_predictions, references=true_labels)
+        self.eval_results = results
+        self.predicted_labels = predictions
+        self.labels = labels
         return {"precision": results["overall_precision"], "recall": results["overall_recall"], "f1": results["overall_f1"], "accuracy": results["overall_accuracy"]}
         
     def train(self):
@@ -114,13 +121,14 @@ class NerClassifier:
         self.trainer = Trainer(
             self.model,
             self.args,
-            train_dataset=self.train_tokenized_datasets,
+            train_dataset=None,
             eval_dataset=self.test_tokenized_datasets,
             data_collator=self.data_collator,
             tokenizer=self.tokenizer,
             compute_metrics=self.compute_metrics,
             )
-        self.trainer.evaluate()
+        self.model.eval()
+        self.trainer.evaluate(eval_dataset = self.test_tokenized_datasets)
 
     def predict(self, text):
         self.trainer = Trainer(

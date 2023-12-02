@@ -3,6 +3,7 @@ import Levenshtein
 import spacy
 import numpy as np
 import random
+import matplotlib.pyplot as plt
 
 class CreateDataset:
     def __init__(self, data, labels = None):
@@ -26,6 +27,40 @@ class CreateDataset:
 
     def __getitem__(self, index):
         return self.data[index]
+    
+    def get_nr_of_products(self):
+        return  sum(token.count('B-PROD') for token in self.labels)
+    
+    def get_nr_of_non_products(self):
+        return sum('B-PROD' not in token for token in self.labels)
+    
+    def sentences_length(self):
+        return [len(sentence.split()) for sentence in self.data]
+    
+    def sentence_distribution_histogram(self):
+        sentence_lengths = self.sentences_length()
+        plt.hist(sentence_lengths, bins=range(min(sentence_lengths), max(sentence_lengths) + 1, 1), edgecolor='black')
+        plt.xlabel('Sentence Length')
+        plt.ylabel('Frequency')
+        plt.title('Histogram of Sentence Lengths')
+
+        mean_length = np.mean(sentence_lengths)
+        std_length = np.std(sentence_lengths)
+        annotation_text = f"Mean: {mean_length:.2f}\nStd: {std_length:.2f}"
+        plt.annotate(annotation_text, xy=(0.95, 0.95), xycoords='axes fraction', ha='right', va='top')
+
+        plt.show()
+
+    def classes_balance_plot(self):
+        categories = ['Products', 'Non-Products']
+        counts = [self.get_nr_of_products(), self.get_nr_of_non_products()]
+
+        plt.bar(categories, counts, color=['blue', 'green'])
+        plt.xlabel('Categories')
+        plt.ylabel('Number of Samples')
+        plt.title('Number of Products vs. Number of Non-Products')
+        plt.show()
+
     
     def label_data_using_lavenshtein(self, target_group, similarity_threshold=0.8):
         self.labels = [['O' for j in range(len(self.data[i].split()))] for i in range(len(self.data))]
@@ -85,7 +120,7 @@ class CreateDataset:
         return dataset_final[:-1]
 
     def split_data_balanced(self, split_percent = 0.7):
-        data = [item.lower() for item in self.data]
+        data = [item for item in self.data]
         product_data_idx = self.get_indices_by_label()
         non_product_data_idx = np.asarray([idx for idx in range(len(self.data)) if idx not in product_data_idx]).astype(int)
 
@@ -117,4 +152,5 @@ class CreateDataset:
         test_tokens = [item.split() for item in self.test_tokens]
         self.train_dataset = self.data_to_dataset(train_tokens, self.train_labels)
         self.test_dataset = self.data_to_dataset(test_tokens, self.test_labels)
+
 
