@@ -26,13 +26,13 @@ The primary objective of this project is to construct a robust NER model capable
 ![Data distribution](https://github.com/LuizaRusnac/nerFurnitureProd/blob/master/histogram_data_distibution.png)!
 
 - Using **bert-base-case** model, for test set after 10 iterations: 
-- precision: 0.6763
-- recall: 0.6167
-- f1: 0.6451
+   - precision: 0.6763
+   - recall: 0.6167
+   - f1: 0.6451
 - Using **distil-bert-uncase** model, for test set after 10 iterations:
-- precision: 0.5469
-- recall: 0.4876
-- f1: 0.5156
+   - precision: 0.5469
+   - recall: 0.4876
+   - f1: 0.5156
 
 ## Future work:
 - The project extract names and content only from the provided urls. The reason is that certain websites featured products other than furniture (ex: www.factorybuys.com.au). It could impact the database by incorrectly labeling products other than furniture. For future work we could have a dictionary and scrap the data over the desired categories: chairs, sofas etc.
